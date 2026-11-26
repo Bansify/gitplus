@@ -97,7 +97,7 @@ test('partial blob failure aborts before creating a tree, commit or deletion', a
   assert.ok(writes.every((path) => path.endsWith('/git/blobs')));
 });
 
-test('verified Gothwad account changes abort pending GitHub reads and clear the old PAT', async (t) => {
+test('verified Bansify account changes abort pending GitHub reads and clear the old PAT', async (t) => {
   const service = new GitHubService();
   service.bindAccount('alice');
   service.setToken('test-alice-token');
@@ -116,7 +116,7 @@ test('verified Gothwad account changes abort pending GitHub reads and clear the 
   service.bindAccount(null);
 });
 
-test('a batch interrupted by Gothwad account switching cannot continue under the new GitHub token', async (t) => {
+test('a batch interrupted by Bansify account switching cannot continue under the new GitHub token', async (t) => {
   const service = new GitHubService();
   service.bindAccount('alice');
   service.setToken('test-alice-token');

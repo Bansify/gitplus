@@ -7,17 +7,17 @@ function storage() {
   return { getItem: (key: string) => values.get(key) ?? null, setItem: (key: string, value: string) => values.set(key, value), removeItem: (key: string) => values.delete(key) };
 }
 
-test('tokens are session-only, Gothwad-owner bound, and legacy copies are deleted', () => {
+test('tokens are session-only, Bansify-owner bound, and legacy copies are deleted', () => {
   const localStorage = storage();
   const sessionStorage = storage();
   Object.defineProperty(globalThis, 'window', { value: { localStorage, sessionStorage }, configurable: true });
   try {
-    localStorage.setItem('gothwad_github_pat', 'legacy-test-value');
-    sessionStorage.setItem('gothwad_github_pat', 'unbound-legacy-value');
+    localStorage.setItem('bansify_github_pat', 'legacy-test-value');
+    sessionStorage.setItem('bansify_github_pat', 'unbound-legacy-value');
     tokenStorage.bindOwner('alice-id');
     assert.equal(tokenStorage.get(), '');
-    assert.equal(localStorage.getItem('gothwad_github_pat'), null);
-    assert.equal(sessionStorage.getItem('gothwad_github_pat'), null);
+    assert.equal(localStorage.getItem('bansify_github_pat'), null);
+    assert.equal(sessionStorage.getItem('bansify_github_pat'), null);
     tokenStorage.set('session-test-value');
     assert.equal(localStorage.getItem('gitplus_github_connection'), null);
     assert.deepEqual(JSON.parse(sessionStorage.getItem('gitplus_github_connection')!), { ownerId: 'alice-id', token: 'session-test-value' });
@@ -41,5 +41,5 @@ test('blocked storage uses memory and owner changes wipe it', () => {
   tokenStorage.bindOwner('bob');
   assert.equal(tokenStorage.get(), '');
   tokenStorage.bindOwner(null);
-  assert.throws(() => tokenStorage.set('no-owner-token'), /Verify your Gothwad/);
+  assert.throws(() => tokenStorage.set('no-owner-token'), /Verify your Bansify/);
 });

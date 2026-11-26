@@ -1,6 +1,6 @@
-// Only the GitHub connection lives here. Gothwad identity is always verified by Accounts.
+// Only the GitHub connection lives here. Bansify identity is always verified by Accounts.
 const KEY = 'gitplus_github_connection';
-const LEGACY = 'gothwad_github_pat';
+const LEGACY = 'bansify_github_pat';
 let owner: string | null = null;
 let memoryToken = '';
 
@@ -33,7 +33,7 @@ export const tokenStorage = {
   },
   set(token: string) {
     discardLegacy();
-    if (token && !owner) throw new Error('Verify your Gothwad account before connecting GitHub.');
+    if (token && !owner) throw new Error('Verify your Bansify account before connecting GitHub.');
     memoryToken = token;
     try {
       if (token) window.sessionStorage.setItem(KEY, JSON.stringify({ ownerId: owner, token }));

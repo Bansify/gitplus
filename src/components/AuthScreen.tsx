@@ -160,7 +160,7 @@ export const AuthScreen: React.FC<AuthScreenProps> = ({ onSuccess, initialError 
               GitPlus
             </h1>
             <p className="text-xs sm:text-sm text-[#5f6368] dark:text-[#9aa0a6] mt-1 max-w-md mx-auto">
-              A Gothwad Tech product · Connect GitHub to browse repositories, edit code and sync ZIP files.
+              A Bansify product · Connect GitHub to browse repositories, edit code and sync ZIP files.
             </p>
           </div>
         </div>
@@ -168,7 +168,7 @@ export const AuthScreen: React.FC<AuthScreenProps> = ({ onSuccess, initialError 
         {/* Auth Card */}
         <div className="bg-white dark:bg-[#292a2d] border border-[#dadce0] dark:border-[#3c4043] rounded-3xl p-6 sm:p-7 shadow-sm space-y-5 transition-colors duration-200">
           <p className="text-sm text-[#5f6368] dark:text-[#9aa0a6]">
-            You are signed in with Gothwad Accounts. GitHub access is a separate connection; your Gothwad password is never requested here.
+            You are signed in with Bansify Accounts. GitHub access is a separate connection; your Bansify password is never requested here.
           </p>
           {error && (
             <div id="github-connection-error" role="alert" tabIndex={-1} className="p-3 bg-[#ea4335]/10 border border-[#ea4335]/30 rounded-xl text-xs text-[#ea4335] flex items-start gap-2">
@@ -182,7 +182,7 @@ export const AuthScreen: React.FC<AuthScreenProps> = ({ onSuccess, initialError 
             <label className="flex items-center gap-2 text-xs"><input id="oauth-allow-delete" type="checkbox" checked={allowDelete} onChange={(e) => setAllowDelete(e.target.checked)} disabled={oauthLoading} />Request repository deletion access (destructive permission)</label>
             <button id="github-oauth-connect" type="button" disabled={oauthEnabled !== true || oauthLoading || loading} onClick={connectOAuth} className="w-full flex items-center justify-center gap-2 rounded-xl bg-[#0494f4] px-4 py-3 text-white font-bold text-sm disabled:opacity-50 disabled:cursor-not-allowed"><Github size={18} />{oauthLoading ? 'Opening GitHub…' : 'Connect with GitHub'}</button>
             {oauthEnabled !== true && <p id="oauth-configuration-note" className="text-xs text-[#5f6368] dark:text-[#9aa0a6]">{oauthEnabled === null ? 'Checking OAuth availability…' : 'OAuth is unavailable or not configured. The administrator must configure the GitHub OAuth App runtime credentials. You can still use a PAT below.'}</p>}
-            <p className="text-[11px] text-[#5f6368] dark:text-[#9aa0a6]">Saved only in this tab session, bound to your Gothwad account. No D1 storage or cross-device sync. Unchecking deletion does not revoke an earlier GitHub grant; revoke it in GitHub settings.</p>
+            <p className="text-[11px] text-[#5f6368] dark:text-[#9aa0a6]">Saved only in this tab session, bound to your Bansify account. No D1 storage or cross-device sync. Unchecking deletion does not revoke an earlier GitHub grant; revoke it in GitHub settings.</p>
           </section>
           <div className="border-t border-[#dadce0] dark:border-[#3c4043] pt-4 text-xs font-semibold">Or connect manually with a PAT</div>
           {/* Quick Create Token Link Banner */}
@@ -281,7 +281,7 @@ export const AuthScreen: React.FC<AuthScreenProps> = ({ onSuccess, initialError 
           <div className="pt-2 border-t border-[#dadce0] dark:border-[#3c4043] flex items-center justify-between text-[11px] text-[#5f6368] dark:text-[#9aa0a6]">
             <div className="flex items-center gap-1.5">
               <Lock className="w-3.5 h-3.5 text-[#34a853]" />
-              <span>GitHub connection is scoped to this Gothwad account and tab.</span>
+              <span>GitHub connection is scoped to this Bansify account and tab.</span>
             </div>
             <button
               type="button"

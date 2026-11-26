@@ -4,13 +4,13 @@ import { handleGitHubOAuth, TRANSACTION_COOKIE, type GitHubOAuthEnv } from '../s
 import { handleAccountAction } from '../server/accountActions';
 import { challengeFor, randomProof, OAUTH_PROTOCOL, OAUTH_PROTOCOL_HEADER, OAUTH_DEPLOYMENT_HEADER } from '../shared/githubOAuth';
 
-const origin = 'https://gitplus.gothwadtech.com';
+const origin = 'https://gitplus.bansify.com';
 const env: GitHubOAuthEnv = { GITPLUS_ORIGIN: origin, GITHUB_CLIENT_ID: 'test-client-id', GITHUB_CLIENT_SECRET: 'test-only-secret-not-a-real-github-secret' };
 const identity = (id = 'alice-id') => ({ authenticated: true, user: { id, username: 'alice', first_name: 'Alice' }, activeId: 'a', authuser: 0, accounts: [{ id: 'a', authuser: 0, username: 'alice', name: 'Alice' }, { id: 'b', authuser: 1, username: 'bobby', name: 'Bob' }] });
 const json = (body: unknown, status = 200) => new Response(JSON.stringify(body), { status, headers: { 'Content-Type': 'application/json' } });
 const makeRequest = (path: string, body?: unknown, txnCookie = '', extraHeaders: Record<string, string> = {}) => new Request(origin + path, {
   method: body === undefined ? 'GET' : 'POST',
-  headers: { Cookie: `gothwad_sess_a=account-cookie${txnCookie ? '; ' + txnCookie : ''}`, ...(body !== undefined ? { Origin: origin, 'Content-Type': 'application/json' } : {}), ...extraHeaders },
+  headers: { Cookie: `bansify_sess_a=account-cookie${txnCookie ? '; ' + txnCookie : ''}`, ...(body !== undefined ? { Origin: origin, 'Content-Type': 'application/json' } : {}), ...extraHeaders },
   ...(body === undefined ? {} : { body: JSON.stringify(body) }),
 });
 const readCookie = (res: Response) => res.headers.getSetCookie().find((v) => v.startsWith(TRANSACTION_COOKIE + '='))!.split(';')[0];
@@ -19,7 +19,7 @@ function provider(owner = 'alice-id') {
   const requests: { url: string; init?: RequestInit }[] = [];
   const fetcher: typeof fetch = async (input, init) => {
     const url = String(input); requests.push({ url, init });
-    if (url === 'https://api.gothwadtech.com/api/auth/me') {
+    if (url === 'https://api.bansify.com/api/auth/me') {
       assert.ok(!new Headers(init?.headers).get('Cookie')?.includes(TRANSACTION_COOKIE));
       return json(identity(owner));
     }
@@ -49,7 +49,7 @@ test('unconfigured OAuth reports unavailable without exposing secrets or disabli
   assert.equal((await handleGitHubOAuth(new Request('https://gitplus.pages.dev/api/github/config'), env)).status, 403);
 });
 
-test('start is CSRF-protected, verifies Gothwad identity and requests explicit PKCE/scopes', async () => {
+test('start is CSRF-protected, verifies Bansify identity and requests explicit PKCE/scopes', async () => {
   for (const originHeader of ['', 'https://evil.example']) {
     const res = await handleGitHubOAuth(makeRequest('/api/github/start', {}, '', { Origin: originHeader }), env);
     assert.equal(res.status, 403);
@@ -78,7 +78,7 @@ test('start rejects anonymous Accounts and oversized input before GitHub authori
   assert.equal((await handleGitHubOAuth(makeRequest('/api/github/start', { challenge: 'x'.repeat(5000) }), env, anonymous)).status, 400);
 });
 
-test('callback rejects state tampering, modified cookie, denied consent and changed Gothwad owner', async () => {
+test('callback rejects state tampering, modified cookie, denied consent and changed Bansify owner', async () => {
   const s = await start();
   for (const query of [`state=${randomProof()}&code=abc`, `state=${s.body.state}&state=${s.body.state}&code=abc`, `state=${s.body.state}&error=access_denied`]) {
     const res = await handleGitHubOAuth(makeRequest('/api/github/callback?' + query, undefined, s.cookie), env, provider().fetcher);
@@ -128,7 +128,7 @@ test('completion requires originating tab PKCE and same verified owner; token ne
 
 test('failed exchange is generic, clears the transaction and never reflects provider secrets/errors', async () => {
   const p = provider(); const s = await start(p.fetcher); const cb = await callback(s, p.fetcher);
-  const failure: typeof fetch = async (url, options) => String(url).includes('api.gothwadtech.com') ? p.fetcher(url, options) : json({ error: 'bad_code', error_description: env.GITHUB_CLIENT_SECRET }, 500);
+  const failure: typeof fetch = async (url, options) => String(url).includes('api.bansify.com') ? p.fetcher(url, options) : json({ error: 'bad_code', error_description: env.GITHUB_CLIENT_SECRET }, 500);
   const response = await handleGitHubOAuth(makeRequest('/api/github/complete', { state: s.body.state, verifier: s.verifier }, readCookie(cb)), env, failure);
   assert.equal(response.status, 502);
   assert.ok(!(await response.text()).includes(env.GITHUB_CLIENT_SECRET!));
@@ -141,15 +141,15 @@ test('universal-menu sign-out validates origin/slot and relays only approved coo
   const p = provider();
   const response = await handleAccountAction(makeRequest('/api/accounts/signout', { selector: 'a', slot: 'b' }), env, async (url, init) => {
     if (String(url).endsWith('/api/auth/me')) return p.fetcher(url, init);
-    assert.equal(url, 'https://api.gothwadtech.com/api/auth/accounts/b/signout');
+    assert.equal(url, 'https://api.bansify.com/api/auth/accounts/b/signout');
     assert.equal(init?.method, 'POST');
     assert.equal(new Headers(init?.headers).get('Origin'), origin);
     const res = json({ ok: true, access_token: 'must-not-expose' });
-    res.headers.append('Set-Cookie', 'gothwad_sess_b=; Path=/; HttpOnly; Secure; SameSite=Lax; Domain=.gothwadtech.com; Max-Age=0');
+    res.headers.append('Set-Cookie', 'bansify_sess_b=; Path=/; HttpOnly; Secure; SameSite=Lax; Domain=.bansify.com; Max-Age=0');
     return res;
   });
   assert.deepEqual(await response.json(), { ok: true });
-  assert.ok(response.headers.getSetCookie().some((c) => c.startsWith('gothwad_sess_b=')));
+  assert.ok(response.headers.getSetCookie().some((c) => c.startsWith('bansify_sess_b=')));
 });
 
 test('global sign-out uses only the fixed Accounts endpoint; failed mutations do not claim logout', async () => {
@@ -157,7 +157,7 @@ test('global sign-out uses only the fixed Accounts endpoint; failed mutations do
   for (const success of [true, false]) {
     const response = await handleAccountAction(makeRequest('/api/accounts/signout-all', { selector: 'a' }), env, async (url, init) => {
       if (String(url).endsWith('/api/auth/me')) return p.fetcher(url, init);
-      assert.equal(url, 'https://api.gothwadtech.com/api/auth/signout');
+      assert.equal(url, 'https://api.bansify.com/api/auth/signout');
       assert.equal(init?.redirect, 'error');
       assert.equal(init?.body, '{}');
       return json({ ok: success });
@@ -183,7 +183,7 @@ test('token-exchange diagnostics distinguish allowlisted GitHub failures without
   for (const scenario of cases) {
     const p = provider(); const s = await start(p.fetcher); const cb = await callback(s, p.fetcher);
     const response = await handleGitHubOAuth(makeRequest('/api/github/complete', { state: s.body.state, verifier: s.verifier }, readCookie(cb)), env, async (url, init) => {
-      if (String(url).includes('api.gothwadtech.com')) return p.fetcher(url, init);
+      if (String(url).includes('api.bansify.com')) return p.fetcher(url, init);
       return json({ ...scenario.body, error_description: env.GITHUB_CLIENT_SECRET, error_uri: 'https://example.invalid/?code=private-code', refresh_token: 'private-refresh-token' }, scenario.status);
     });
     assert.equal(response.status, scenario.reply);
@@ -201,7 +201,7 @@ test('HTML, malformed JSON and transport failures during exchange have safe dist
   for (const mode of ['html', 'json', 'network'] as const) {
     const p = provider(); const s = await start(p.fetcher); const cb = await callback(s, p.fetcher);
     const response = await handleGitHubOAuth(makeRequest('/api/github/complete', { state: s.body.state, verifier: s.verifier }, readCookie(cb)), env, async (url, init) => {
-      if (String(url).includes('api.gothwadtech.com')) return p.fetcher(url, init);
+      if (String(url).includes('api.bansify.com')) return p.fetcher(url, init);
       if (mode === 'network') throw new Error('private-network-detail');
       return new Response('private-invalid-body', { headers: { 'Content-Type': mode === 'html' ? 'text/html' : 'application/json' } });
     });

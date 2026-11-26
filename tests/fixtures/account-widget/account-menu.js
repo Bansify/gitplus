@@ -65,7 +65,7 @@ class SheetOverlayController {
   ensureMounted() {
     if (this.hostEl || !globalThis.document?.body) return;
     this.hostEl = document.createElement('div');
-    this.hostEl.setAttribute('data-gothwad-account-overlay', '1');
+    this.hostEl.setAttribute('data-bansify-account-overlay', '1');
     if (typeof this.hostEl.attachShadow === 'function') {
       this.shadow = this.hostEl.attachShadow({ mode: 'open' });
     } else {
@@ -225,7 +225,7 @@ if (globalThis.window) {
   globalThis.window.GothwadAccountMenu = GothwadAccountMenu;
 }
 
-if (typeof globalThis.HTMLElement !== 'undefined' && globalThis.customElements && !globalThis.customElements.get('gothwad-account-menu')) {
+if (typeof globalThis.HTMLElement !== 'undefined' && globalThis.customElements && !globalThis.customElements.get('bansify-account-menu')) {
   class GothwadAccountMenuElement extends globalThis.HTMLElement {
     constructor() {
       super();
@@ -259,7 +259,7 @@ if (typeof globalThis.HTMLElement !== 'undefined' && globalThis.customElements &
         this._session = { authenticated: false, user: null, accounts: [], activeId: null, authuser: 0 };
       }
       this.renderButton();
-      this.dispatchEvent(new CustomEvent('gothwad-session', { detail: this._session, bubbles: true }));
+      this.dispatchEvent(new CustomEvent('bansify-session', { detail: this._session, bubbles: true }));
       return this._session;
     }
 

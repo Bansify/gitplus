@@ -2,7 +2,7 @@ import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { createSessionClient } from '../src/services/accounts/sessionClient';
 
-const session = (id = 'alice-id') => ({ status: 'authenticated', user: { id, username: 'alice', name: 'Alice', email: 'alice@gothwadtech.com' }, activeSlot: 'a', authuser: 0, accounts: [{ slot: 'a', authuser: 0, username: 'alice', name: 'Alice' }] });
+const session = (id = 'alice-id') => ({ status: 'authenticated', user: { id, username: 'alice', name: 'Alice', email: 'alice@bansify.com' }, activeSlot: 'a', authuser: 0, accounts: [{ slot: 'a', authuser: 0, username: 'alice', name: 'Alice' }] });
 const json = (body: unknown, status = 200) => new Response(JSON.stringify(body), { status, headers: { 'Content-Type': 'application/json' } });
 
 test('session checks share in-flight work by selector and do not persist a completed identity', async () => {
@@ -68,7 +68,7 @@ test('malformed JSON, SPA HTML, malformed identity and forbidden responses are e
 test('anonymous and unsupported are explicit states; foreign production links are rejected', async () => {
   const cases: [Response, string][] = [
     [json({ status: 'anonymous', code: 'signed_out', message: 'Sign in' }, 401), 'anonymous'],
-    [json({ status: 'unsupported', productionOrigin: 'https://gitplus.gothwadtech.com', message: 'Custom domain required' }), 'unsupported'],
+    [json({ status: 'unsupported', productionOrigin: 'https://gitplus.bansify.com', message: 'Custom domain required' }), 'unsupported'],
     [json({ status: 'unsupported', productionOrigin: 'https://evil.example', message: 'Go here' }), 'unavailable'],
     [json({ status: 'unavailable', code: 'accounts_rate_limited', message: 'Wait' }, 429), 'unavailable'],
   ];
