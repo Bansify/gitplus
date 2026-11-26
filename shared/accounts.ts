@@ -1,6 +1,6 @@
 import { BRAND } from './brand';
 
-export interface GothwadUser {
+export interface BansifyUser {
   id: string;
   username: string;
   name: string;
@@ -14,7 +14,7 @@ export interface GothwadAccount {
 }
 export interface AuthenticatedSession {
   status: 'authenticated';
-  user: GothwadUser;
+  user: BansifyUser;
   activeSlot: string | null;
   authuser: number;
   accounts: GothwadAccount[];
@@ -79,7 +79,7 @@ export function firstPartyOrigin(value: string): string | null {
 }
 export function signInUrl(origin: string, selector: string | null = null, choose = false): string {
   const safeOrigin = firstPartyOrigin(origin);
-  if (!safeOrigin) throw new Error('Gothwad SSO requires a configured Gothwad Tech HTTPS domain.');
+  if (!safeOrigin) throw new Error('Bansify SSO requires a configured Bansify HTTPS domain.');
   const next = new URL('/', safeOrigin);
   next.searchParams.set(RETURN_MARKER, '1');
   if (selector && validSelector(selector)) next.searchParams.set('authuser', selector);

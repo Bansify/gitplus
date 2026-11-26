@@ -12,7 +12,7 @@ interface ThemeContextType {
 
 const ThemeContext = createContext<ThemeContextType | undefined>(undefined);
 
-const THEME_STORAGE_KEY = 'gothwad_github_theme';
+const THEME_STORAGE_KEY = 'bansify_github_theme';
 
 const applyThemeToDOM = (isDarkMode: boolean) => {
   if (typeof document === 'undefined') return;

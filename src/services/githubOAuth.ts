@@ -62,7 +62,7 @@ export function completeGitHubOAuth(ownerId: string, returned: { status: string;
     if (returned.status !== 'complete') throw new Error(oauthFailure('callback', returned.error));
     let pending: Pending | null = null;
     try { pending = JSON.parse(sessionStorage.getItem(OAUTH_PENDING_KEY) || 'null'); } catch { /* Invalid/missing state is rejected. */ }
-    if (!pending || pending.ownerId !== ownerId || pending.expires <= Date.now() || !validProof(pending.verifier) || !validProof(pending.state)) throw new Error('GitHub authorization must finish in the same tab and Gothwad account where it started. Please connect again.');
+    if (!pending || pending.ownerId !== ownerId || pending.expires <= Date.now() || !validProof(pending.verifier) || !validProof(pending.state)) throw new Error('GitHub authorization must finish in the same tab and Bansify account where it started. Please connect again.');
     currentAttempt(ownerId, epoch);
     const result = await api('/api/github/complete', { state: pending.state, verifier: pending.verifier });
     currentAttempt(ownerId, epoch);

@@ -106,7 +106,7 @@ export const Header: React.FC<HeaderProps> = ({
                   </div>
                 ) : (
                   <span className="text-xs sm:text-sm font-bold text-[#5f6368] dark:text-[#9aa0a6] tracking-tight">
-                    by Gothwad Tech
+                    by Bansify
                   </span>
                 )}
 

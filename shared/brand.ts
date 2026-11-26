@@ -1,10 +1,10 @@
-/** GitPlus is a Gothwad Tech product. Keep public product identity consistent. */
+/** GitPlus is a Bansify product. Keep public product identity consistent. */
 export const BRAND = {
   name: 'GitPlus',
-  company: 'Gothwad Tech',
+  company: 'Bansify',
   version: '0.2.0',
-  domain: 'gothwadtech.com',
-  accountsWebOrigin: 'https://accounts.gothwadtech.com',
-  accountsApiOrigin: 'https://api.gothwadtech.com',
-  productionOrigin: 'https://gitplus.gothwadtech.com',
+  domain: 'bansify.com',
+  accountsWebOrigin: 'https://accounts.bansify.com',
+  accountsApiOrigin: 'https://api.bansify.com',
+  productionOrigin: 'https://gitplus.bansify.com',
 } as const;

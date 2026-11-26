@@ -11,7 +11,7 @@ export function AccountsGate({ children }: React.PropsWithChildren) {
   const loading = state.status === 'loading';
   const paused = state.status === 'paused';
   const anonymous = state.status === 'anonymous';
-  const title = loading ? 'Checking your Gothwad Account' : paused ? 'Signed out of GitPlus' : anonymous ? 'Your account. Your workspace.' : state.status === 'unsupported' ? 'Use your GitPlus custom domain' : 'Account verification unavailable';
+  const title = loading ? 'Checking your Bansify Account' : paused ? 'Signed out of GitPlus' : anonymous ? 'Your account. Your workspace.' : state.status === 'unsupported' ? 'Use your GitPlus custom domain' : 'Account verification unavailable';
   return (
     <main className="min-h-screen flex items-center justify-center px-5 py-12 bg-[#f8f9fa] dark:bg-[#202124] text-[#202124] dark:text-[#e8eaed]">
       <section className="w-full max-w-lg space-y-7">
@@ -23,17 +23,17 @@ export function AccountsGate({ children }: React.PropsWithChildren) {
           <div className="text-[#0494f4]">{loading ? <RefreshCw className="animate-spin" /> : <ShieldCheck size={28} />}</div>
           <h2 className="text-xl font-bold">{title}</h2>
           <p role={loading ? 'status' : 'alert'} className="text-sm leading-6 text-[#5f6368] dark:text-[#9aa0a6]">
-            {loading ? 'Already signed in to Gothwad Accounts? GitPlus will securely recognize your existing session.'
-              : paused ? 'Your GitHub connection has been cleared from this tab. Other Gothwad products remain signed in. Continue to verify your account again.'
+            {loading ? 'Already signed in to Bansify Accounts? GitPlus will securely recognize your existing session.'
+              : paused ? 'Your GitHub connection has been cleared from this tab. Other Bansify products remain signed in. Continue to verify your account again.'
               : 'message' in state ? state.message : ''}
           </p>
           {anonymous && returned && <p className="text-sm rounded-xl bg-amber-500/10 p-3">Accounts returned without a usable session. Check shared cookies and the custom domain, then retry. GitPlus will not redirect you in a loop.</p>}
-          {anonymous && supportedOrigin && <a id="gothwad-signin-link" href={signInUrl(supportedOrigin, selector)} className="flex items-center justify-center gap-2 rounded-xl bg-[#0494f4] px-4 py-3 text-sm font-semibold text-white"><UserRound size={18} />Continue with Gothwad Accounts<ArrowRight size={16} /></a>}
+          {anonymous && supportedOrigin && <a id="bansify-signin-link" href={signInUrl(supportedOrigin, selector)} className="flex items-center justify-center gap-2 rounded-xl bg-[#0494f4] px-4 py-3 text-sm font-semibold text-white"><UserRound size={18} />Continue with Bansify Accounts<ArrowRight size={16} /></a>}
           {!loading && <button type="button" id="accounts-retry" onClick={retry} className="w-full rounded-xl border border-[#dadce0] dark:border-[#3c4043] px-4 py-3 text-sm font-semibold">{paused ? 'Continue to GitPlus' : 'Retry session check'}</button>}
           {state.status === 'unsupported' && state.productionOrigin && <a className="block text-center text-sm text-[#0494f4] underline break-all" href={state.productionOrigin}>Open {state.productionOrigin}</a>}
-          {anonymous && supportedOrigin && <a className="block text-center text-sm text-[#0494f4] underline" href={signInUrl(supportedOrigin, null, true)}>Choose another Gothwad account</a>}
+          {anonymous && supportedOrigin && <a className="block text-center text-sm text-[#0494f4] underline" href={signInUrl(supportedOrigin, null, true)}>Choose another Bansify account</a>}
         </div>
-        <p className="text-xs leading-5 text-[#5f6368] dark:text-[#9aa0a6]">Sign in with Gothwad Accounts first, then connect GitHub separately. GitPlus never asks for your Gothwad password or copies your Accounts tokens into browser storage.</p>
+        <p className="text-xs leading-5 text-[#5f6368] dark:text-[#9aa0a6]">Sign in with Bansify Accounts first, then connect GitHub separately. GitPlus never asks for your Bansify password or copies your Accounts tokens into browser storage.</p>
       </section>
     </main>
   );

@@ -109,7 +109,7 @@ async function oauthRequest(request: Request, env: GitHubOAuthEnv, fetcher: type
   const account = await verifiedAccount(request, env, txn.selector, fetcher);
   if (!account.ok) { account.response.headers.append('Set-Cookie', clearOAuthCookie()); return account.response; }
   const cookies = [...account.cookies, ...cleared];
-  if (account.session.user.id !== txn.owner) return jsonResponse({ error: 'account_changed', message: 'Your Gothwad account changed. Start the GitHub connection again.' }, 409, cookies);
+  if (account.session.user.id !== txn.owner) return jsonResponse({ error: 'account_changed', message: 'Your Bansify account changed. Start the GitHub connection again.' }, 409, cookies);
   const controller = new AbortController();
   const timer = setTimeout(() => controller.abort(), 10_000);
   try {

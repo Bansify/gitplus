@@ -326,10 +326,10 @@ export const SettingsView: React.FC<SettingsViewProps> = ({ onClose }) => {
             <h3 className="font-bold text-[#202124] dark:text-[#e8eaed]">About GitPlus</h3>
           </div>
           <p className="text-[#5f6368] dark:text-[#9aa0a6] leading-relaxed">
-            GitPlus is a Gothwad Tech product: a GitHub mobile and web workspace. Provides instantaneous atomic ZIP code synchronization, commit time-travel diffing, Actions CI/CD workflows, releases publisher, issues manager, and gists engine.
+            GitPlus is a Bansify product: a GitHub mobile and web workspace. Provides instantaneous atomic ZIP code synchronization, commit time-travel diffing, Actions CI/CD workflows, releases publisher, issues manager, and gists engine.
           </p>
           <div className="pt-2 flex items-center justify-between text-[11px] text-[#80868b] border-t border-[#dadce0] dark:border-[#3c4043]">
-            <span>GitPlus · Gothwad Tech</span>
+            <span>GitPlus · Bansify</span>
             <span>REST API v3 / 2022-11-28</span>
           </div>
         </div>

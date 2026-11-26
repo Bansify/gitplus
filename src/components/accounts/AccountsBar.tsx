@@ -26,8 +26,8 @@ export function AccountsBar() {
   const manageHref = `${BRAND.accountsWebOrigin}/u/${session?.authuser ?? 0}/me`;
   const mutate = async (slot?: string) => {
     if (!session) return;
-    const label = slot ? 'this Gothwad account' : 'all Gothwad accounts in this browser';
-    if (!confirm(`Sign out of ${label} across Gothwad products? Unsaved work may be lost.`)) return;
+    const label = slot ? 'this Bansify account' : 'all Bansify accounts in this browser';
+    if (!confirm(`Sign out of ${label} across Bansify products? Unsaved work may be lost.`)) return;
     try {
       const response = await fetch(slot ? '/api/accounts/signout' : '/api/accounts/signout-all', {
         method: 'POST', credentials: 'same-origin', cache: 'no-store', redirect: 'error', signal: AbortSignal.timeout(15_000),
@@ -45,16 +45,16 @@ export function AccountsBar() {
   const options: MenuOptions = {
     appDomain: BRAND.domain, accountsWebOrigin: BRAND.accountsWebOrigin,
     // All widget mutations are overridden below. A future default action cannot call raw /auth/me.
-    accountsApiOrigin: `${window.location.origin}/api/accounts`, ecosystemName: 'Gothwad',
+    accountsApiOrigin: `${window.location.origin}/api/accounts`, ecosystemName: 'Bansify',
     theme: isDark ? 'dark' : 'light', anchorEl: anchor.current,
     nextUrl: new URL(signInUrl(window.location.origin, null, true)).searchParams.get('next')!,
     manageAccountHref: manageHref,
     accountHref: (account) => `/?authuser=${encodeURIComponent(account.id)}`,
-    onSwitchAccount: (account) => { if (confirm('Switch Gothwad account? GitPlus will disconnect GitHub and discard unsaved work in this tab.')) switchAccount(account.id); },
+    onSwitchAccount: (account) => { if (confirm('Switch Bansify account? GitPlus will disconnect GitHub and discard unsaved work in this tab.')) switchAccount(account.id); },
     onSignOutAccount: (slot) => mutate(slot), onSignOutAll: () => mutate(),
     onManageAccount: () => { window.location.assign(manageHref); },
     onClose: () => anchor.current?.focus(), onError: (message) => setNotice(message),
-    extraActions: [{ label: 'Sign out of GitPlus (this tab)', onClick: () => { if (confirm('Sign out of GitPlus in this tab? Other Gothwad products will stay signed in.')) signOut(); } }],
+    extraActions: [{ label: 'Sign out of GitPlus (this tab)', onClick: () => { if (confirm('Sign out of GitPlus in this tab? Other Bansify products will stay signed in.')) signOut(); } }],
   };
   // Keep the same shared sheet in sync with theme/account changes, without using auto-sso.
   useEffect(() => {
@@ -66,13 +66,13 @@ export function AccountsBar() {
     const widget = await accountWidget.load();
     if (!alive.current || latestOwner.current !== session.user.id) return;
     setLoading(false);
-    if (!widget) { setNotice('The universal Accounts menu could not load. Retry, or manage your account on Gothwad Accounts.'); return; }
+    if (!widget) { setNotice('The universal Accounts menu could not load. Retry, or manage your account on Bansify Accounts.'); return; }
     try { widget.open(widgetState(session), { ...options, anchorEl: anchor.current }); }
     catch { setNotice('The Accounts menu is temporarily unavailable. Use the account management link.'); }
   };
-  return <div id="gothwad-account-bar" className="flex flex-wrap items-center justify-between gap-2 px-4 py-2 text-xs bg-[#f1f3f4] dark:bg-[#303134] text-[#202124] dark:text-[#e8eaed] border-b border-[#dadce0] dark:border-[#3c4043]">
-    <span className="text-[#5f6368] dark:text-[#9aa0a6]">GitPlus · Gothwad Tech</span>
-    <button ref={anchor} id="gothwad-account-menu" type="button" aria-label={`Gothwad account menu for ${session.user.email}`} disabled={loading} onClick={open} className="flex items-center gap-2 rounded-full px-2 py-1 font-semibold hover:bg-black/5 dark:hover:bg-white/5"><UserRound size={20} /><span className="max-w-[210px] truncate">{loading ? 'Loading account menu…' : session.user.email}</span></button>
-    {notice && <div role="alert" className="w-full rounded-lg border border-amber-500 p-3 space-y-2"><p>{notice}</p><a className="underline mr-4" href={manageHref}>Manage Gothwad Account</a><button type="button" className="underline" onClick={signOut}>Sign out of GitPlus (this tab)</button></div>}
+  return <div id="bansify-account-bar" className="flex flex-wrap items-center justify-between gap-2 px-4 py-2 text-xs bg-[#f1f3f4] dark:bg-[#303134] text-[#202124] dark:text-[#e8eaed] border-b border-[#dadce0] dark:border-[#3c4043]">
+    <span className="text-[#5f6368] dark:text-[#9aa0a6]">GitPlus · Bansify</span>
+    <button ref={anchor} id="bansify-account-menu" type="button" aria-label={`Bansify account menu for ${session.user.email}`} disabled={loading} onClick={open} className="flex items-center gap-2 rounded-full px-2 py-1 font-semibold hover:bg-black/5 dark:hover:bg-white/5"><UserRound size={20} /><span className="max-w-[210px] truncate">{loading ? 'Loading account menu…' : session.user.email}</span></button>
+    {notice && <div role="alert" className="w-full rounded-lg border border-amber-500 p-3 space-y-2"><p>{notice}</p><a className="underline mr-4" href={manageHref}>Manage Bansify Account</a><button type="button" className="underline" onClick={signOut}>Sign out of GitPlus (this tab)</button></div>}
   </div>;
 }

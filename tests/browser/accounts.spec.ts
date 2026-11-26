@@ -2,10 +2,10 @@ import { readFile } from 'node:fs/promises';
 import { createHash } from 'node:crypto';
 import { test, expect, type Page } from '@playwright/test';
 
-const ORIGIN = 'https://gitplus.gothwadtech.com';
+const ORIGIN = 'https://gitplus.bansify.com';
 const account = (which: 'alice' | 'bob') => ({
   status: 'authenticated',
-  user: { id: `${which}-id`, username: which, name: which === 'alice' ? 'Alice Example' : 'Bob Example', email: `${which}@gothwadtech.com` },
+  user: { id: `${which}-id`, username: which, name: which === 'alice' ? 'Alice Example' : 'Bob Example', email: `${which}@bansify.com` },
   activeSlot: which === 'alice' ? 'a' : 'b', authuser: which === 'alice' ? 0 : 1,
   accounts: [{ slot: 'a', authuser: 0, username: 'alice', name: 'Alice' }, { slot: 'b', authuser: 1, username: 'bob', name: 'Bob' }],
 });
@@ -16,7 +16,7 @@ async function mockApp(page: Page, session: (url: URL) => { status: number; body
   page.on('dialog', (dialog) => dialog.accept());
   await page.route('https://fonts.googleapis.com/**', (route) => route.abort());
   await page.route('https://fonts.gstatic.com/**', (route) => route.abort());
-  await page.route('https://accounts.gothwadtech.com/widget/**', async (route) => {
+  await page.route('https://accounts.bansify.com/widget/**', async (route) => {
     const filename = new URL(route.request().url()).pathname.split('/').pop()!;
     if (!['account-menu.js', 'account-menu-template.js', 'account-menu-styles.js'].includes(filename)) return route.abort();
     await route.fulfill({ contentType: 'text/javascript', headers: { 'Access-Control-Allow-Origin': '*' }, body: await readFile(`tests/fixtures/account-widget/${filename}`, 'utf8') });
@@ -49,21 +49,21 @@ test('existing Accounts session automatically opens Connect GitHub, isolates swi
   const errors = await mockApp(page, (url) => { checks++; return { status: 200, body: account(url.searchParams.get('authuser') === 'b' ? 'bob' : 'alice') }; });
   await page.goto(ORIGIN);
   await expect(page.locator('#pat-input')).toBeVisible();
-  await expect(page.locator('#gothwad-account-bar')).toContainText('alice@gothwadtech.com');
+  await expect(page.locator('#bansify-account-bar')).toContainText('alice@bansify.com');
   await expect(page).toHaveTitle('GitPlus');
   expect(checks).toBe(1);
   expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(true);
-  expect(await page.evaluate(() => sessionStorage.getItem('gothwad_github_pat'))).toBeNull();
+  expect(await page.evaluate(() => sessionStorage.getItem('bansify_github_pat'))).toBeNull();
   await page.locator('#pat-input').fill('dummy-github-token-for-browser-test');
   await page.locator('#connect-github-btn').click();
   await expect(page.locator('#mobile-bottom-navigation')).toBeVisible();
   expect(JSON.parse((await page.evaluate(() => sessionStorage.getItem('gitplus_github_connection')))!).ownerId).toBe('alice-id');
-  await page.locator('#gothwad-account-menu').click();
+  await page.locator('#bansify-account-menu').click();
   await page.locator('[data-gw-switch="b"]').click();
-  await expect(page.locator('#gothwad-account-bar')).toContainText('bob@gothwadtech.com');
+  await expect(page.locator('#bansify-account-bar')).toContainText('bob@bansify.com');
   await expect(page.locator('#pat-input')).toBeVisible();
   expect(await page.evaluate(() => sessionStorage.getItem('gitplus_github_connection'))).toBeNull();
-  await page.locator('#gothwad-account-menu').click();
+  await page.locator('#bansify-account-menu').click();
   await page.getByRole('button', { name: 'Sign out of GitPlus (this tab)', exact: true }).click();
   await expect(page.getByRole('heading', { name: 'Signed out of GitPlus' })).toBeVisible();
   const beforeReload = checks;
@@ -77,18 +77,18 @@ test('existing Accounts session automatically opens Connect GitHub, isolates swi
 
 test('return without a session never redirects in a loop; service errors offer retry, not false login', async ({ page }) => {
   let unavailable = false;
-  const errors = await mockApp(page, () => unavailable ? { status: 503, body: { status: 'unavailable', code: 'accounts_not_json', message: 'Accounts routing error. Please retry.' } } : { status: 401, body: { status: 'anonymous', code: 'signed_out', message: 'Sign in with Gothwad Accounts.' } });
+  const errors = await mockApp(page, () => unavailable ? { status: 503, body: { status: 'unavailable', code: 'accounts_not_json', message: 'Accounts routing error. Please retry.' } } : { status: 401, body: { status: 'anonymous', code: 'signed_out', message: 'Sign in with Bansify Accounts.' } });
   await page.goto(`${ORIGIN}/?__gitplus_auth_return=1`);
   await expect(page.getByText('Accounts returned without a usable session.', { exact: false })).toBeVisible();
-  await expect(page.locator('#gothwad-signin-link')).toBeVisible();
+  await expect(page.locator('#bansify-signin-link')).toBeVisible();
   expect(page.url()).not.toContain('__gitplus_auth_return');
   expect(page.url()).toContain(ORIGIN);
-  const link = new URL((await page.locator('#gothwad-signin-link').getAttribute('href'))!);
-  expect(link.origin).toBe('https://accounts.gothwadtech.com');
+  const link = new URL((await page.locator('#bansify-signin-link').getAttribute('href'))!);
+  expect(link.origin).toBe('https://accounts.bansify.com');
   unavailable = true;
   await page.locator('#accounts-retry').click();
   await expect(page.getByRole('heading', { name: 'Account verification unavailable' })).toBeVisible();
-  await expect(page.locator('#gothwad-signin-link')).toHaveCount(0);
+  await expect(page.locator('#bansify-signin-link')).toHaveCount(0);
   await expect(page.locator('#pat-input')).toHaveCount(0);
   expect(errors).toEqual([]);
 });
@@ -171,7 +171,7 @@ test('universal widget sign-out uses the same-origin protected action, while loa
     await route.fulfill({ contentType: 'application/json', body: '{"ok":true}' });
   });
   await page.goto(ORIGIN);
-  await page.locator('#gothwad-account-menu').click();
+  await page.locator('#bansify-account-menu').click();
   await page.locator('[data-gw-signout-slot="a"]').click();
   await expect(page.getByRole('heading', { name: 'Signed out of GitPlus' })).toBeVisible();
   expect(called).toBe(true);
@@ -180,15 +180,15 @@ test('universal widget sign-out uses the same-origin protected action, while loa
 
 test('blocked universal widget shows a management link instead of a duplicate menu', async ({ page }) => {
   const errors = await mockApp(page, () => ({ status: 200, body: account('alice') }));
-  await page.route('https://accounts.gothwadtech.com/widget/**', (route) => route.abort());
+  await page.route('https://accounts.bansify.com/widget/**', (route) => route.abort());
   await page.goto(ORIGIN);
-  await page.locator('#gothwad-account-menu').click();
+  await page.locator('#bansify-account-menu').click();
   await expect(page.getByText('The universal Accounts menu could not load.', { exact: false })).toBeVisible();
-  await expect(page.getByRole('link', { name: 'Manage Gothwad Account', exact: true })).toBeVisible();
+  await expect(page.getByRole('link', { name: 'Manage Bansify Account', exact: true })).toBeVisible();
   expect(errors).toEqual([]);
 });
 
-test('late OAuth completion cannot replace a newly selected Gothwad user connection', async ({ page }) => {
+test('late OAuth completion cannot replace a newly selected Bansify user connection', async ({ page }) => {
   const errors = await mockApp(page, (url) => ({ status: 200, body: account(url.searchParams.get('authuser') === 'b' ? 'bob' : 'alice') }));
   await page.addInitScript(() => sessionStorage.setItem('gitplus_github_oauth_pending', JSON.stringify({ ownerId: 'alice-id', state: 'a'.repeat(43), verifier: 'b'.repeat(43), expires: Date.now() + 600000 })));
   let release!: () => void;
@@ -200,9 +200,9 @@ test('late OAuth completion cannot replace a newly selected Gothwad user connect
   });
   await page.goto(`${ORIGIN}/?github_oauth=complete&authuser=a`);
   await requested;
-  await page.locator('#gothwad-account-menu').click();
+  await page.locator('#bansify-account-menu').click();
   await page.locator('[data-gw-switch="b"]').click();
-  await expect(page.locator('#gothwad-account-bar')).toContainText('bob@gothwadtech.com');
+  await expect(page.locator('#bansify-account-bar')).toContainText('bob@bansify.com');
   await page.locator('#pat-input').fill('bob-test-only-token');
   await page.locator('#connect-github-btn').click();
   await expect(page.locator('#mobile-bottom-navigation')).toBeVisible();

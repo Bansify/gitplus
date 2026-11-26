@@ -56,11 +56,11 @@ export function resolveEndpoints(opts = {}) {
     try {
       const host = new URL(accountsWebOrigin).hostname.toLowerCase();
       if (host === 'localhost' || host === '127.0.0.1' || host.endsWith('.e2b.app')) {
-        return 'gothwadtech.com';
+        return 'bansify.com';
       }
       return host.startsWith('accounts.') ? host.slice('accounts.'.length) : host;
     } catch {
-      return locHost || 'gothwadtech.com';
+      return locHost || 'bansify.com';
     }
   })();
 
@@ -68,11 +68,11 @@ export function resolveEndpoints(opts = {}) {
     opts.accountsApiOrigin || `${accountsWebOrigin}/api`
   ).replace(/\/+$/, '');
 
-  const ecosystemName = String(opts.ecosystemName || 'Gothwad').trim() || 'Gothwad';
+  const ecosystemName = String(opts.ecosystemName || 'Bansify').trim() || 'Bansify';
   return { appDomain: inferredDomain, accountsWebOrigin, accountsApiOrigin, ecosystemName };
 }
 
-export function normalizeMenuAccount(raw, idx = 0, appDomain = 'gothwadtech.com') {
+export function normalizeMenuAccount(raw, idx = 0, appDomain = 'bansify.com') {
   const username = String(raw?.username || '').trim().toLowerCase();
   const firstName = String(raw?.firstName ?? raw?.first_name ?? '').trim();
   const lastName = String(raw?.lastName ?? raw?.last_name ?? '').trim();

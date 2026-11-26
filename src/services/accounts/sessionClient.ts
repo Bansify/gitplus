@@ -21,9 +21,9 @@ export function createSessionClient(fetcher: typeof fetch = fetch) {
           accounts: Array.isArray(body.accounts) ? body.accounts.map((a) => ({ ...record(a), id: record(a)?.slot })) : [] });
         return normalized || failure('session_invalid', 'GitPlus could not verify the returned account identity.');
       }
-      if ((response.status === 401 || response.status === 409) && body.status === 'anonymous') return { status: 'anonymous', code: String(body.code || 'signed_out'), message: String(body.message || 'Sign in with Gothwad Accounts.') };
+      if ((response.status === 401 || response.status === 409) && body.status === 'anonymous') return { status: 'anonymous', code: String(body.code || 'signed_out'), message: String(body.message || 'Sign in with Bansify Accounts.') };
       if (response.ok && body.status === 'unsupported' && typeof body.productionOrigin === 'string' && firstPartyOrigin(body.productionOrigin)) return { status: 'unsupported', code: 'first_party_domain_required', message: String(body.message), productionOrigin: body.productionOrigin };
-      return failure(typeof body.code === 'string' ? body.code : 'session_unavailable', typeof body.message === 'string' ? body.message : 'Gothwad Accounts could not be verified. Please retry.');
+      return failure(typeof body.code === 'string' ? body.code : 'session_unavailable', typeof body.message === 'string' ? body.message : 'Bansify Accounts could not be verified. Please retry.');
     } catch {
       return failure('session_network_error', 'Session verification failed or timed out. Check your connection and retry.');
     } finally { clearTimeout(timer); }
