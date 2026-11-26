@@ -5,6 +5,7 @@ import { GitHubUser, GitHubRepo, GitHubRateLimit } from './types/github';
 import { AuthScreen } from './components/AuthScreen';
 import { Header } from './components/Header';
 import { BottomNav, TabType } from './components/BottomNav';
+import { BansifyShell, GITPLUS_SECTIONS } from './ui/BansifyShell';
 import { ReposTab } from './components/tabs/ReposTab';
 import type { CodebaseSubTab } from './components/tabs/CodebaseTab';
 const CodebaseTab = lazy(() => import('./components/tabs/CodebaseTab').then((m) => ({ default: m.CodebaseTab })));
@@ -184,7 +185,19 @@ function MainApp() {
 
   // Authenticated 6-Tab Application with Full-Screen Overlays
   return (
-    <div className="min-h-screen bg-[#f8f9fa] dark:bg-[#202124] text-[#202124] dark:text-[#e8eaed] flex flex-col selection:bg-[#0494f4]/20 selection:text-[#0494f4] transition-colors duration-200">
+    <BansifyShell
+      sections={GITPLUS_SECTIONS}
+      activeSection={activeTab}
+      onSelect={(id) => setActiveTab(id as typeof activeTab)}
+      onOpenSettings={() => setShowSettingsModal(true)}
+      isDark={document.documentElement.classList.contains('dark')}
+      onToggleTheme={() => document.documentElement.classList.toggle('dark')}
+      userName={user?.login}
+      userEmail={undefined}
+      onAccount={() => setShowProfileModal(true)}
+      searchPlaceholder="Search repositories"
+    >
+    <div className="flex h-full min-h-0 flex-col overflow-y-auto bg-[#f8f9fa] dark:bg-[#202124] text-[#202124] dark:text-[#e8eaed] selection:bg-[#0494f4]/20 selection:text-[#0494f4] transition-colors duration-200">
       {/* Top Header (Curved at bottom two ends) */}
       <Header
         user={user}
@@ -297,6 +310,7 @@ function MainApp() {
         <SettingsView onClose={() => setShowSettingsModal(false)} />
       )}
     </div>
+    </BansifyShell>
   );
 }
 
